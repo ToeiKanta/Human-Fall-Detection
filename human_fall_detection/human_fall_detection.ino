@@ -2,6 +2,7 @@
 const int MPU_addr=0x68;  // I2C address of the MPU-6050
 int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ;
 float ax=0, ay=0, az=0, gx=0, gy=0, gz=0;
+int LED_pin = 26;
 
 //int data[STORE_SIZE][5]; //array for saving past data
 //byte currentIndex=0; //stores current data array index (0-255)
@@ -24,11 +25,16 @@ void setup(){
  Wire.endTransmission(true);
  Serial.begin(9600);
 
- pinMode(11, OUTPUT);
- digitalWrite(11, HIGH);
+ pinMode(LED_pin, OUTPUT);
+ digitalWrite(LED_pin, HIGH);
 }
 void loop(){
-
+  while(fall == true){
+    digitalWrite(LED_pin, LOW);
+    delay(20);
+    digitalWrite(LED_pin, HIGH);
+    delay(20);
+  }
  mpu_read();
  //2050, 77, 1947 are values for calibration of accelerometer
  // values may be different for you
@@ -69,10 +75,7 @@ void loop(){
   }
  if (fall==true){ //in event of a fall detection
    Serial.println("FALL DETECTED");
-   digitalWrite(11, LOW);
-   delay(20);
-   digitalWrite(11, HIGH);
-   fall=false;
+   //fall=false;
   // exit(1);
    }
  if (trigger2count>=6){ //allow 0.5s for orientation change
