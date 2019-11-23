@@ -9,7 +9,9 @@ const int MPU_addr=0x68;  // I2C address of the MPU-6050
 int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ;
 float ax=0, ay=0, az=0, gx=0, gy=0, gz=0;
 int LED_pin = 23;
-int BTN_pin = 1;
+int BTN_pin = 19;
+int PulseSensorPurplePin = 15;  
+int Signal;    
 
 //int data[STORE_SIZE][5]; //array for saving past data
 //byte currentIndex=0; //stores current data array index (0-255)
@@ -58,10 +60,39 @@ void setup(){
   LINE.setToken(LINE_TOKEN);
 }
 void loop(){
-  //Serial.println(analogRead(8));//pluse sensor
+  timeCountAlert = 0;
+  while(digitalRead(BTN_pin) == LOW){
+    timeCountAlert++;
+    delay(1);
+    if(timeCountAlert>=3000){
+      digitalWrite(LED_pin, LOW); 
+      delay(300);
+      digitalWrite(LED_pin, HIGH);
+      delay(300);
+      digitalWrite(LED_pin, LOW); 
+      delay(300);
+      digitalWrite(LED_pin, HIGH);
+      delay(300);
+      LINE.notify("=================================");
+      LINE.notify("ผู้ป่วยหมายเลข 1123 ต้องการความช่วยเหลือ รีบเข้าไปช่วยเหลือ หรือติดต่อ ด่วน !!!");
+      LINE.notify("ผู้ป่วยพักอยู่ที่ห้อง 11 ชั้น 3 อาคารพักผู้ป่วย 1");
+      LINE.notifyPicture("https://i.imgur.com/RZc8l13.jpg");
+      timeCountAlert = -10000;
+    }
+  }
+  timeCountAlert = 0;
+
+  //PULSE SIGNAL
+  Signal = analogRead(PulseSensorPurplePin);  
+  Serial.println(Signal);  
+  delay(10);
+
+  
   while(fall == true){
     timeCountAlert++;
+    digitalWrite(LED_pin, LOW);
     if(timeCountAlert>=timeCountMax){
+      LINE.notify("=================================");
       LINE.notify("ผู้ป่วยหมายเลข 1123 กำลังหกล้ม รีบเข้าไปช่วยเหลือ หรือติดต่อ ด่วน !!!");
       LINE.notify("ผู้ป่วยพักอยู่ที่ห้อง 11 ชั้น 3 อาคารพักผู้ป่วย 1");
       LINE.notifyPicture("https://i.imgur.com/RZc8l13.jpg");
@@ -104,7 +135,7 @@ void loop(){
        angleChange = pow(pow(gx,2)+pow(gy,2)+pow(gz,2),0.5);
        //delay(10);
        Serial.println(angleChange); 
-       if ((angleChange>=0) && (angleChange<=15)){ //if orientation changes remains between 0-10 degrees
+       if ((angleChange>=0) && (angleChange<=20)){ //if orientation changes remains between 0-10 degrees
            fall=true; trigger3=false; trigger3count=0;
            Serial.println(angleChange);
              }
