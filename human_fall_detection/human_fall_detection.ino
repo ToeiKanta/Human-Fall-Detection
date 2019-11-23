@@ -72,7 +72,7 @@ void loop(){
    digitalWrite(11, LOW);
    delay(20);
    digitalWrite(11, HIGH);
-   //fall=false;
+   fall=false;
   // exit(1);
    }
  if (trigger2count>=6){ //allow 0.5s for orientation change
