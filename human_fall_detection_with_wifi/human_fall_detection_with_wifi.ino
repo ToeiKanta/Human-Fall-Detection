@@ -22,6 +22,10 @@ byte trigger2count=0; //stores the counts past since trigger 2 was set true
 byte trigger3count=0; //stores the counts past since trigger 3 was set true
 int angleChange=0;
 
+//=====line======
+int alertTime = 6000; //miliSec before Alert to Line
+int timeCountMax = alertTime/40;
+int timeCountAlert = 0;
 
 void setup(){
  Wire.begin();
@@ -50,10 +54,13 @@ void setup(){
 }
 void loop(){
   while(fall == true){
-    LINE.notify("ผู้ป่วยหมายเลข 1123 กำลังหกล้ม รีบเข้าไปช่วยเหลือ หรือติดต่อ ด่วน !!!");
-   LINE.notify("ผู้ป่วยพักอยู่ที่ห้อง 11 ชั้น 3 อาคารพักผู้ป่วย 1");
-   LINE.notifyPicture("https://i.imgur.com/RZc8l13.jpg");
-   
+    timeCountAlert++;
+    if(timeCountAlert>=timeCountMax){
+      LINE.notify("ผู้ป่วยหมายเลข 1123 กำลังหกล้ม รีบเข้าไปช่วยเหลือ หรือติดต่อ ด่วน !!!");
+      LINE.notify("ผู้ป่วยพักอยู่ที่ห้อง 11 ชั้น 3 อาคารพักผู้ป่วย 1");
+      LINE.notifyPicture("https://i.imgur.com/RZc8l13.jpg");
+      timeCountAlert = -100000;
+    }
     digitalWrite(LED_pin, LOW);
     delay(20);
     digitalWrite(LED_pin, HIGH);
