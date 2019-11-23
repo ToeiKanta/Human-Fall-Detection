@@ -52,12 +52,13 @@ void setup(){
     delay(100);
   }
   
-  Serial.printf("\nWiFi connected\nIP : ");
+  //Serial.printf("\nWiFi connected\nIP : ");
   Serial.println(WiFi.localIP());  
 
   LINE.setToken(LINE_TOKEN);
 }
 void loop(){
+  //Serial.println(analogRead(8));//pluse sensor
   while(fall == true){
     timeCountAlert++;
     if(timeCountAlert>=timeCountMax){
@@ -70,7 +71,7 @@ void loop(){
       fall = false;
       timeCountAlert = 0;
     }
-    digitalWrite(LED_pin, LOW);
+    digitalWrite(LED_pin, LOW); 
     delay(20);
     digitalWrite(LED_pin, HIGH);
     delay(20);
@@ -91,14 +92,14 @@ void loop(){
  float Raw_AM = pow(pow(ax,2)+pow(ay,2)+pow(az,2),0.5);
  int AM = Raw_AM * 10;  // as values are within 0 to 1, I multiplied 
                         // it by for using if else conditions 
-
+ Serial.print("AM");
  Serial.println(AM);
  //Serial.println(PM);
  //delay(500);
 
  if (trigger3==true){
     trigger3count++;
-    //Serial.println(trigger3count);
+    Serial.println(trigger3count);
     if (trigger3count>=8){ 
        angleChange = pow(pow(gx,2)+pow(gy,2)+pow(gz,2),0.5);
        //delay(10);
@@ -146,7 +147,7 @@ void loop(){
      trigger1=false; trigger1count=0;
      }
    }
- if (AM<=3 && trigger2==false){ //if AM breaks lower threshold (0.4g)
+ if (AM<=4){ //if AM breaks lower threshold (0.4g)
    trigger1=true;
    Serial.println("TRIGGER 1 ACTIVATED");
    }
