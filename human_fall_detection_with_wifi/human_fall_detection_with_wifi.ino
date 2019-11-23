@@ -8,7 +8,8 @@
 const int MPU_addr=0x68;  // I2C address of the MPU-6050
 int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ;
 float ax=0, ay=0, az=0, gx=0, gy=0, gz=0;
-int LED_pin = 26;
+int LED_pin = 23;
+int BTN_pin = 1;
 
 //int data[STORE_SIZE][5]; //array for saving past data
 //byte currentIndex=0; //stores current data array index (0-255)
@@ -34,7 +35,7 @@ void setup(){
  Wire.write(0);     // set to zero (wakes up the MPU-6050)
  Wire.endTransmission(true);
  Serial.begin(9600);
-
+  pinMode(BTN_pin,INPUT_PULLUP);
  pinMode(LED_pin, OUTPUT);
  digitalWrite(LED_pin, HIGH);
   //================Line connect ====================
@@ -45,6 +46,10 @@ void setup(){
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.println("Connecting to WiFi..");
+    digitalWrite(LED_pin, LOW);
+    delay(100);
+    digitalWrite(LED_pin, HIGH);
+    delay(100);
   }
   
   Serial.printf("\nWiFi connected\nIP : ");
@@ -60,6 +65,10 @@ void loop(){
       LINE.notify("ผู้ป่วยพักอยู่ที่ห้อง 11 ชั้น 3 อาคารพักผู้ป่วย 1");
       LINE.notifyPicture("https://i.imgur.com/RZc8l13.jpg");
       timeCountAlert = -100000;
+    }
+    if(digitalRead(BTN_pin) == LOW){
+      fall = false;
+      timeCountAlert = 0;
     }
     digitalWrite(LED_pin, LOW);
     delay(20);
@@ -90,11 +99,11 @@ void loop(){
  if (trigger3==true){
     trigger3count++;
     //Serial.println(trigger3count);
-    if (trigger3count>=10){ 
+    if (trigger3count>=8){ 
        angleChange = pow(pow(gx,2)+pow(gy,2)+pow(gz,2),0.5);
        //delay(10);
        Serial.println(angleChange); 
-       if ((angleChange>=0) && (angleChange<=10)){ //if orientation changes remains between 0-10 degrees
+       if ((angleChange>=0) && (angleChange<=15)){ //if orientation changes remains between 0-10 degrees
            fall=true; trigger3=false; trigger3count=0;
            Serial.println(angleChange);
              }
@@ -137,7 +146,7 @@ void loop(){
      trigger1=false; trigger1count=0;
      }
    }
- if (AM<=2 && trigger2==false){ //if AM breaks lower threshold (0.4g)
+ if (AM<=3 && trigger2==false){ //if AM breaks lower threshold (0.4g)
    trigger1=true;
    Serial.println("TRIGGER 1 ACTIVATED");
    }
