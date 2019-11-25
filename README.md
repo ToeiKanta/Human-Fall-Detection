@@ -4,6 +4,8 @@
 
 Cr.https://maker.pro/arduino/tutorial/how-to-build-a-fall-detector-with-arduino
 
+เป็นโปรเจ็คทดสอบ ในการแข่งขัน Hackathon
+
 ## ส่วนประกอบหลัก
 
  - arduino esp32 1
