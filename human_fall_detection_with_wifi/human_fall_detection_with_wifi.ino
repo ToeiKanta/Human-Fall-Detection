@@ -83,9 +83,9 @@ void loop(){
   timeCountAlert = 0;
 
   //PULSE SIGNAL
-  Signal = analogRead(PulseSensorPurplePin);  
-  Serial.println(Signal);  
-  delay(10);
+  //Signal = analogRead(PulseSensorPurplePin);  
+  //Serial.println(Signal);  
+  //delay(10);
 
   
   while(fall == true){
@@ -131,11 +131,11 @@ void loop(){
  if (trigger3==true){
     trigger3count++;
     Serial.println(trigger3count);
-    if (trigger3count>=8){ 
+    if (trigger3count>=10){//3
        angleChange = pow(pow(gx,2)+pow(gy,2)+pow(gz,2),0.5);
        //delay(10);
        Serial.println(angleChange); 
-       if ((angleChange>=0) && (angleChange<=20)){ //if orientation changes remains between 0-10 degrees
+       if ((angleChange>=0) && (angleChange<=10)){ //if orientation changes remains between 0-10 degrees
            fall=true; trigger3=false; trigger3count=0;
            Serial.println(angleChange);
              }
@@ -164,8 +164,8 @@ void loop(){
    trigger2count++;
    //angleChange=acos(((double)x*(double)bx+(double)y*(double)by+(double)z*(double)bz)/(double)AM/(double)BM);
    angleChange = pow(pow(gx,2)+pow(gy,2)+pow(gz,2),0.5); Serial.println(angleChange);
-   if (angleChange>=30 && angleChange<=400){ //if orientation changes by between 80-100 degrees
-     trigger3=true; trigger2=false; trigger2count=0;
+   if (angleChange>=10 && angleChange<=400){ //if orientation changes by between 80-100 degrees
+     trigger3=true; trigger2=false; trigger2count=0;//30
      Serial.println(angleChange);
      Serial.println("TRIGGER 3 ACTIVATED");
        }
@@ -178,12 +178,12 @@ void loop(){
      trigger1=false; trigger1count=0;
      }
    }
- if (AM<=4){ //if AM breaks lower threshold (0.4g)
-   trigger1=true;
+ if (AM<=5 && trigger2==false){ //if AM breaks lower threshold (0.4g)
+   trigger1=true;//4 //6
    Serial.println("TRIGGER 1 ACTIVATED");
    }
 //It appears that delay is needed in order not to clog the port
- delay(100);
+ delay(50);
 }
 
 void mpu_read(){
